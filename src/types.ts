@@ -21,9 +21,12 @@ export type CustomerData = {
     };
   };
 
-export type Training = Omit<TrainingData, "_links">;
+  export type Training = Omit<TrainingData, "_links"> & {
+    customerName?: string;
+  };
 
 export type TrainingData = {
+  customerName?: string;
     date: string;
     time: string;
     duration: number;

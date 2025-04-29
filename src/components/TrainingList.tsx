@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import {
-  ColDef,
-  ModuleRegistry,
-  AllCommunityModule,
-  themeMaterial,
-} from "ag-grid-community";
-import { Training } from "../types";
+import { ColDef, ModuleRegistry, AllCommunityModule } from "ag-grid-community";
+import { Training, TrainingData } from "../types";
 import { format } from "date-fns";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -15,30 +10,42 @@ export default function TrainingList() {
   const [trainings, setTrainings] = useState<Training[]>([]);
 
   const [columnDefs] = useState<ColDef<Training>[]>([
-    { field: "date", filter: true, width: 350 },
-    { field: "duration", filter: true, width: 150 },
-    { field: "activity", filter: true, width: 150 },
+    { field: "customerName", filter: true, width: 250 },
+    { field: "date", filter: true, width: 250 },
+    { field: "duration", filter: true, width: 250 },
+    { field: "activity", filter: true, width: 250 },
   ]);
 
-  useEffect(() => fetchData(), []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/trainings"
+        );
 
-  const fetchData = () => {
-    fetch(
-      "https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/trainings"
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        const formattedTrainings = data._embedded.trainings.map(
-          (training: Training) => {
+        const data = await response.json();
+
+        const formattedTrainings = await Promise.all(
+          data._embedded.trainings.map(async (training: TrainingData) => {
+            const customerResponse = await fetch(training._links.customer.href);
+            const customerData = await customerResponse.json();
+
             return {
               ...training,
               date: format(new Date(training.date), "dd.MM.yyyy HH:mm"),
+              customerName: `${customerData.firstname} ${customerData.lastname}`,
             };
-          }
+          })
         );
+
         setTrainings(formattedTrainings);
-      });
-  };
+      } catch (error) {
+        console.error("Error fetching trainings or customers:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -48,7 +55,6 @@ export default function TrainingList() {
           columnDefs={columnDefs}
           pagination={true}
           paginationAutoPageSize={true}
-          theme={themeMaterial}
         />
       </div>
     </>
