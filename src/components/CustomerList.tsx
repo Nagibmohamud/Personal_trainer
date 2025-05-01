@@ -6,6 +6,8 @@ import { Customer } from "../types";
 import Button from "@mui/material/Button";
 import AddCustomer from "./AddCustomer";
 import SnackBar from "@mui/material/Snackbar";
+import { CSVLink } from "react-csv";
+import EditCustomer from "./EditCustomer";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -33,6 +35,18 @@ export default function CustomerList() {
       .catch((error) => console.error("Error saving customer:", error));
   };
 
+  const updateCustomer = (customer, link) => {
+    fetch(link, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(customer),
+    })
+      .then(() => fetchData())
+      .catch((error) => console.error("Error updating customer:", error));
+  };
+
   const [columnDefs] = useState<ColDef<Customer>[]>([
     { field: "firstname", filter: true, width: 150 },
     { field: "lastname", filter: true, width: 150 },
@@ -41,6 +55,20 @@ export default function CustomerList() {
     { field: "city", filter: true, width: 150 },
     { field: "email", filter: true, width: 150 },
     { field: "phone", filter: true, width: 150 },
+    {
+      field: "_links.self.href",
+      width: 150,
+      filter: false,
+      sortable: false,
+      headerName: "Edit",
+      cellRenderer: (params) => (
+        <EditCustomer
+          updateCustomer={updateCustomer}
+          customer={params.data}
+          link={params.value}
+        />
+      ),
+    },
     {
       field: "_links.self.href",
       width: 150,
@@ -67,10 +95,40 @@ export default function CustomerList() {
       });
   };
 
+  const csvHeaders = [
+    {
+      label: "First Name",
+      key: "firstname",
+    },
+    {
+      label: "Last Name",
+      key: "lastname",
+    },
+    {
+      label: "Street Address",
+      key: "streetaddress",
+    },
+    {
+      label: "Postcode",
+      key: "postcode",
+    },
+    {
+      label: "City",
+      key: "city",
+    },
+    {
+      label: "Email",
+      key: "email",
+    },
+    {
+      label: "Phone",
+      key: "phone",
+    },
+  ];
+
   return (
     <>
       <div style={{ width: "100%", height: 450 }}>
-        ¨
         <AddCustomer saveCustomer={saveCustomer} />
         <AgGridReact
           rowData={customers}
@@ -78,6 +136,14 @@ export default function CustomerList() {
           pagination={true}
           paginationAutoPageSize={true}
         />
+        <CSVLink
+          data={customers}
+          headers={csvHeaders}
+          filename="customers.csv"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+        >
+          Export to CSV
+        </CSVLink>
       </div>
       <SnackBar
         open={open}
