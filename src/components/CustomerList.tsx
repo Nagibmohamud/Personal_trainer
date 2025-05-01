@@ -166,7 +166,7 @@ export default function CustomerList() {
       </div>
       <SnackBar
         open={open}
-        autoHideDuration={300}
+        autoHideDuration={3000}
         onClose={() => setOpen(false)}
         message="Customer deleted successfully"
       />
