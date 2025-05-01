@@ -16,9 +16,22 @@ export default function CustomerList() {
   const [open, setOpen] = useState(false);
 
   const deleteCustomer = (link) => {
-    fetch(link, { method: "DELETE" })
-      .then(() => fetchData())
-      .catch((error) => console.error("Error deleting customer:", error));
+    if (window.confirm("Are you sure you want to delete this customer?")) {
+      fetch(link, { method: "DELETE" })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Error when deleting customer");
+          }
+          return response.json();
+        })
+        .then(() => {
+          fetchData();
+          setOpen(true);
+        })
+        .catch((error) => {
+          console.error("Error deleting customer:", error);
+        });
+    }
   };
   const saveCustomer = (customer: Customer) => {
     fetch(
@@ -76,7 +89,12 @@ export default function CustomerList() {
       sortable: false,
       headerName: "Delete",
       cellRenderer: (params) => (
-        <Button color="secondary" onClick={() => deleteCustomer(params.value)}>
+        <Button
+          color="secondary"
+          onClick={() => {
+            deleteCustomer(params.value);
+          }}
+        >
           Delete
         </Button>
       ),
@@ -138,6 +156,7 @@ export default function CustomerList() {
         />
         <CSVLink
           data={customers}
+          separator=";"
           headers={csvHeaders}
           filename="customers.csv"
           className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
@@ -149,7 +168,7 @@ export default function CustomerList() {
         open={open}
         autoHideDuration={300}
         onClose={() => setOpen(false)}
-        message="Car deleted successfully"
+        message="Customer deleted successfully"
       />
     </>
   );
