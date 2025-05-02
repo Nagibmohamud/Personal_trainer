@@ -3,15 +3,16 @@ import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
-import CustomerList from "./components/CustomerList";
+import Schedule from "./components/Schedule";
 import { Box, Button, Link } from "@mui/material";
 
-function Customers() {
+function Calendar() {
   return (
-    <Container maxWidth="lg">
+    <>
+      <CssBaseline />
       <AppBar position="static">
         <Toolbar>
-          <Box sx={{ flexGrow: 1 }}>Customers</Box>
+          <Box sx={{ flexGrow: 1 }}>Calendar</Box>
           <Button color="inherit" component={Link} href="/">
             Training
           </Button>
@@ -23,10 +24,11 @@ function Customers() {
           </Button>
         </Toolbar>
       </AppBar>
-      <CustomerList />
-      <CssBaseline />
-    </Container>
+      <Container maxWidth="lg">
+        <Schedule />
+      </Container>
+    </>
   );
 }
 
-export default Customers;
+export default Calendar;

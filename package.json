@@ -13,9 +13,13 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^7.0.2",
+    "@schedule-x/calendar": "^2.29.0",
+    "@schedule-x/react": "^2.29.0",
+    "@schedule-x/theme-default": "^2.29.0",
     "ag-grid-react": "^33.2.4",
     "date-fns": "^4.1.0",
     "react": "^19.0.0",
+    "react-calendar": "^5.1.0",
     "react-csv": "^2.2.2",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.5.2"
