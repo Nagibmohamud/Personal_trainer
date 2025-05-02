@@ -5,10 +5,12 @@ import { ColDef, ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import { Training, TrainingData } from "../types";
 import { format } from "date-fns";
 import { Button, Snackbar } from "@mui/material";
+import AddTraining from "./AddTraining";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 export default function TrainingList() {
   const [trainings, setTrainings] = useState<Training[]>([]);
+  const [customers, setCustomers] = useState([]);
   const [open, setOpen] = useState(false);
 
   const fetchData = async () => {
@@ -38,6 +40,18 @@ export default function TrainingList() {
     }
   };
 
+  const fetchCustomers = async () => {
+    try {
+      const response = await fetch(
+        "https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/customers"
+      );
+      const data = await response.json();
+      setCustomers(data._embedded.customers);
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+    }
+  };
+
   const deleteTraining = (link) => {
     console.log("deleteTraining", link);
     if (window.confirm("Are you sure you want to delete this training?")) {
@@ -53,6 +67,21 @@ export default function TrainingList() {
           console.error("Error deleting training:", error);
         });
     }
+  };
+
+  const saveTraining = (training: Training) => {
+    fetch(
+      "https://customer-rest-service-frontend-personaltrainer.2.rahtiapp.fi/api/trainings",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(training),
+      }
+    )
+      .then(() => fetchData())
+      .catch((error) => console.error("Error saving training:", error));
   };
 
   const [columnDefs] = useState<ColDef<Training>[]>([
@@ -81,11 +110,13 @@ export default function TrainingList() {
 
   useEffect(() => {
     fetchData();
+    fetchCustomers();
   }, []);
 
   return (
     <>
       <div style={{ width: "100%", height: 450 }}>
+        <AddTraining saveTraining={saveTraining} customers={customers} />
         <AgGridReact
           rowData={trainings}
           columnDefs={columnDefs}
