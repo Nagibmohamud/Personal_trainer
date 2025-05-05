@@ -1,22 +1,25 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-
-import App from "./App.tsx";
-import Customers from "./Customers.tsx";
-
 import ScheduleApp from "./ScheduleApp.tsx";
+import StatsApp from "./StatsApp.tsx";
+import TrainingApp from "./TrainingApp.tsx";
+import CustomersApp from "./CustomersApp.tsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <TrainingApp />,
   },
   {
     path: "/customers",
-    element: <Customers />,
+    element: <CustomersApp />,
   },
   { path: "/calendar", element: <ScheduleApp /> },
+  {
+    path: "/stats",
+    element: <StatsApp />,
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(

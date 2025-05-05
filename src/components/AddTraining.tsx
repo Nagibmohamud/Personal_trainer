@@ -48,9 +48,6 @@ export default function AddTraining(props) {
             type="datetime-local"
             fullWidth
             variant="standard"
-            InputLabelProps={{
-              shrink: true, // Ensures the label doesn't overlap the input
-            }}
             onChange={(event) => {
               setTraining({ ...training, date: event.target.value });
             }}

@@ -3,15 +3,16 @@ import CssBaseline from "@mui/material/CssBaseline";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 
-import CustomerList from "./components/CustomerList";
 import { Box, Button, Link } from "@mui/material";
+import Tilasto from "./components/Stats";
 
-function Customers() {
+function Tilastot() {
   return (
-    <Container maxWidth="lg">
+    <>
+      <CssBaseline />
       <AppBar position="static">
         <Toolbar>
-          <Box sx={{ flexGrow: 1 }}>Customers</Box>
+          <Box sx={{ flexGrow: 1 }}>Stats</Box>
           <Button color="inherit" component={Link} href="/">
             Training
           </Button>
@@ -21,12 +22,16 @@ function Customers() {
           <Button color="inherit" component={Link} href="/calendar">
             Calendar
           </Button>
+          <Button color="inherit" component={Link} href="/stats">
+            Stats
+          </Button>
         </Toolbar>
       </AppBar>
-      <CustomerList />
-      <CssBaseline />
-    </Container>
+      <Container maxWidth="lg">
+        <Tilasto />
+      </Container>
+    </>
   );
 }
 
-export default Customers;
+export default Tilastot;
